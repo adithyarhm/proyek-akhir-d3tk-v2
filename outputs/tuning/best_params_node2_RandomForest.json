@@ -1,12 +1,12 @@
 {
   "model": "RandomForest",
   "label": "node2",
-  "best_mae": 2.298003901169163,
+  "best_mae": 2.2154482004157026,
   "params": {
-    "n_estimators": 400,
-    "max_depth": 24,
-    "min_samples_split": 3,
-    "min_samples_leaf": 3,
-    "max_features": "log2"
+    "n_estimators": 550,
+    "max_depth": 23,
+    "min_samples_split": 2,
+    "min_samples_leaf": 1,
+    "max_features": "sqrt"
   }
 }

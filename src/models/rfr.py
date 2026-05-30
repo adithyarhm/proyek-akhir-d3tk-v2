@@ -9,7 +9,12 @@ def random_forest_regressor_model(X_train, y_train):
     rfr_model = RandomForestRegressor(
         random_state=42,
         n_jobs=-1,
-        verbose=0
+        verbose=0,
+        n_estimators=250,
+        max_depth=22,
+        min_samples_split=2,
+        min_samples_leaf=2,
+        max_features="log2"
     )
     
     # Train Random Forest Regressor pakai MultiOutputRegressor

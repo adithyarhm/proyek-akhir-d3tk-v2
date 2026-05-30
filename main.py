@@ -122,9 +122,9 @@ def main():
 
 
     # ── FASE 2a: Tuning (opsional, aktifkan dengan flag) ──────────────
-    USE_TUNING = False
+    USE_TUNING = True
     
-    N_TUNING_TRIALS = 10
+    N_TUNING_TRIALS = 50
 
     tuning_results = None
     if USE_TUNING:

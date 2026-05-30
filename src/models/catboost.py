@@ -9,7 +9,14 @@ def catboost_model(X_train, y_train):
     cat_model = CatBoostRegressor(
         random_state=42,
         silent=True,
-        allow_writing_files=False
+        allow_writing_files=False,
+        iterations=450,
+        learning_rate=0.21155741395841124,
+        depth=5,
+        l2_leaf_reg=4.998646486979096,
+        random_strength=0.02487587506524233,
+        bagging_temperature=0.5664049362748634,
+        border_count=203
     )
 
     # Train CatBoost pakai MultiOutputRegressor
