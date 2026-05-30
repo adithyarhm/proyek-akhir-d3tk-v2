@@ -11,7 +11,14 @@ definisi fitur, path data, dan parameter pelatihan.
 #   3 = Global,     fitur dasar saja
 #   4 = Global,     fitur dasar + temporal + turunan
 
-SCENARIO = 4  # <-- UBAH SKENARIO DI SINI
+SCENARIO = 1  # <-- UBAH SKENARIO DI SINI
+
+TARGET_COL = ["so2_ugm", "h2s_ugm"]
+BASE_FEATURES = ["hum_pct", "temp_c", "wind_kph"]
+TEMPORAL_FEATURES = ["hour", "minute", "minute_of_day"]
+DERIVED_FEATURES = ["h2s_diff", "so2_diff", "gas_ratio_so2_h2s"]
+SPATIAL_FEATURES = ["lat", "lon", "elev"]
+FEATURES = BASE_FEATURES + TEMPORAL_FEATURES + DERIVED_FEATURES + SPATIAL_FEATURES + TARGET_COL
 
 SCENARIO_CONFIG = {
     1: {
@@ -36,11 +43,7 @@ SCENARIO_CONFIG = {
     },
 }
 
-TARGET_COL = ["so2_ugm", "h2s_ugm"]
-BASE_FEATURES = ["hum_pct", "temp_c"]
-TEMPORAL_FEATURES = ["hour", "minute", "minute_of_day"]
-DERIVED_FEATURES = ["h2s_diff", "so2_diff", "gas_ratio_so2_h2s"]
-FEATURES = BASE_FEATURES + TEMPORAL_FEATURES + DERIVED_FEATURES + TARGET_COL
+
 
 # DATA PATHS & DIRECTORIES
 RAW_DATA_DIR = "data/raw"

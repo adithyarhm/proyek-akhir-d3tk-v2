@@ -9,3 +9,4 @@ lightgbm
 jupyter
 matplotlib
 seaborn
+shap

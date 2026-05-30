@@ -22,6 +22,9 @@ def load_and_merge_raw_nodes() -> pd.DataFrame:
     for f in os.listdir(RAW_DATA_DIR):
         if f.endswith(".csv"):
             df_combined = pd.concat([df_combined, pd.read_csv(os.path.join(RAW_DATA_DIR, f))], ignore_index=True)
+    # Normalisasi nama kolom agar konsisten dengan pipeline
+    if "node" in df_combined.columns and "node_id" not in df_combined.columns:
+        df_combined = df_combined.rename(columns={"node": "node_id"})
     return df_combined
 
 def load_data() -> pd.DataFrame:
@@ -36,4 +39,7 @@ def load_data() -> pd.DataFrame:
     df_final = pd.read_csv(DATA_PATH)
     if "datetime" in df_final.columns:
         df_final["datetime"] = pd.to_datetime(df_final["datetime"], errors="coerce")
+    # Normalisasi nama kolom agar konsisten dengan pipeline
+    if "node" in df_final.columns and "node_id" not in df_final.columns:
+        df_final = df_final.rename(columns={"node": "node_id"})
     return df_final
