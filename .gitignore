@@ -1,5 +1,7 @@
 .venv
 .venv-win
+/app-inference
+/temp
 /saved-models
 /catboost_info
 /src/__pycache__

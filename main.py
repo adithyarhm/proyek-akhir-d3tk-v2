@@ -2,8 +2,10 @@
 MAIN PIPELINE
 =============
 Orkestrasi fase penelitian:
-  Fase 1 → Preprocessing
-  Fase 2 → Training (per-node / global sesuai SCENARIO di config.py)
+  Fase 1 -> Preprocessing
+  Fase 2 -> Training (per-node / global sesuai SCENARIO di config.py)
+  Fase 3 -> Feature Importance
+  Fase 4 -> Inference model 1 jam kedepan
 """
 import os
 import sys
@@ -24,6 +26,7 @@ from src.train import run_training, get_feature_list
 from src.savemodels import save_all_models
 from src.tuning import run_tuning, plot_optuna_results
 from src.evaluation.feature_importance import run_feature_importance
+from src.inference import run_inference
 
 
 def print_metrics_table(results: dict, mode: str):
@@ -177,6 +180,15 @@ def main():
         mode=mode,
         X_test=X_test_for_shap,
         use_shap=True,
+    )
+
+    # ── FASE 4: Inference model 1 jam kedepan ─────────────────────
+    print("\n[FASE 4] Inference 1 Jam ke Depan...")
+    inference_results = run_inference(
+        df=df,
+        results=results,
+        mode=mode,
+        features_used=avail_features,
     )
 
     # ── Simpan semua model pemenang ───────────────────────────────
