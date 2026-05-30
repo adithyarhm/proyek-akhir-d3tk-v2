@@ -1,0 +1,14 @@
+{
+  "model": "CatBoost",
+  "label": "node2",
+  "best_mae": 9.258357591583048,
+  "params": {
+    "iterations": 600,
+    "learning_rate": 0.2695959088002225,
+    "depth": 5,
+    "l2_leaf_reg": 10.660907880584833,
+    "random_strength": 1.321444717327507,
+    "bagging_temperature": 0.2569977724591483,
+    "border_count": 84
+  }
+}

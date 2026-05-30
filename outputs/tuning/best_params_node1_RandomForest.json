@@ -1,0 +1,12 @@
+{
+  "model": "RandomForest",
+  "label": "node1",
+  "best_mae": 89.64354497752542,
+  "params": {
+    "n_estimators": 150,
+    "max_depth": 3,
+    "min_samples_split": 8,
+    "min_samples_leaf": 15,
+    "max_features": "log2"
+  }
+}

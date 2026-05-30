@@ -66,8 +66,8 @@ def train_per_node(df: pd.DataFrame, features: list, tuning_results: dict = None
         print(f"\n[Per-Node] Node: {node_id} | Train: {len(X_train)} | Test: {len(X_test)}")
 
         for model_name, builder in model_builders.items():
-            if tuning_results and (node_id, model_name) in tuning_results:
-                model = tuning_results[(node_id, model_name)]
+            if tuning_results and node_id in tuning_results and model_name in tuning_results[node_id]:
+                model = tuning_results[node_id][model_name]
                 model.fit(X_train, y_train)
             else:
                 model = builder(X_train, y_train)
@@ -114,8 +114,8 @@ def train_global(df: pd.DataFrame, features: list, tuning_results: dict = None) 
     print(f"\n[Global] Train: {len(X_train)} | Test: {len(X_test)} | Features: {global_features}")
 
     for model_name, builder in model_builders.items():
-        if tuning_results and ("global", model_name) in tuning_results:
-            model = tuning_results[("global", model_name)]
+        if tuning_results and "global" in tuning_results and model_name in tuning_results["global"]:
+            model = tuning_results["global"][model_name]
             model.fit(X_train, y_train)
         else:
             model = builder(X_train, y_train)

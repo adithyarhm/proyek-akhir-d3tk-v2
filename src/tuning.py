@@ -14,6 +14,7 @@ Output: dict {model_name: fitted_best_model} siap dioper ke run_training()
 
 import os
 import json
+import warnings
 import numpy as np
 import optuna
 from optuna.samplers import TPESampler
@@ -29,6 +30,11 @@ from catboost import CatBoostRegressor
 from src.config import TARGET_COL
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+# Suppress noisy warnings yang tidak mempengaruhi hasil
+warnings.filterwarnings("ignore", message="X does not have valid feature names")
+warnings.filterwarnings("ignore", category=FutureWarning, module="optuna")
+warnings.filterwarnings("ignore", message=".*ExperimentalWarning.*")
 
 # ── Konfigurasi Global ──────────────────────────────────────────────────────
 N_TRIALS    = 50    # Naikkan ke 100+ untuk hasil lebih optimal
@@ -75,7 +81,7 @@ def _suggest_lightgbm(trial) -> dict:
     """
     max_depth  = trial.suggest_int("max_depth", 3, 12)
     max_leaves = min(2 ** max_depth - 1, 255)
-    num_leaves = trial.suggest_int("num_leaves", 15, max_leaves)
+    num_leaves = trial.suggest_int("num_leaves", min(15, max_leaves), max_leaves)
 
     return {
         "n_estimators":      trial.suggest_int("n_estimators", 100, 600, step=50),
@@ -195,6 +201,7 @@ def tune_single(X: np.ndarray, y: np.ndarray,
             seed=42,
             n_startup_trials=N_STARTUP,  # trial pertama random sebelum TPE aktif
             multivariate=True,           # pertimbangkan korelasi antar parameter
+            warn_independent_sampling=False,  # suppress warning untuk dynamic search space (num_leaves)
         ),
         pruner=MedianPruner(
             n_startup_trials=N_STARTUP,
@@ -212,11 +219,17 @@ def tune_single(X: np.ndarray, y: np.ndarray,
     best_params = study.best_params
     best_mae    = study.best_value
 
+    # study.best_params hanya berisi params dari trial.suggest_*,
+    # Ambil param lengkap (termasuk fixed: random_state, silent, dll)
+    # dari suggest function menggunakan best trial
+    _, suggest_fn = MODEL_REGISTRY[model_name]
+    full_params = suggest_fn(study.best_trial)
+
     print(f"    Best MAE : {best_mae:.4f}")
     print(f"    Best Params : {best_params}")
 
-    # Rebuild & fit pada seluruh data dengan best_params
-    best_model = MultiOutputRegressor(ModelClass(**best_params))
+    # Rebuild & fit pada seluruh data dengan full params
+    best_model = MultiOutputRegressor(ModelClass(**full_params))
     best_model.fit(X, y)
 
     return {

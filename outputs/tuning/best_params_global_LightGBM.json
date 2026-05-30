@@ -1,0 +1,16 @@
+{
+  "model": "LightGBM",
+  "label": "global",
+  "best_mae": 53.26841395875922,
+  "params": {
+    "max_depth": 11,
+    "num_leaves": 248,
+    "n_estimators": 600,
+    "learning_rate": 0.006831465601564252,
+    "min_child_samples": 70,
+    "subsample": 0.5896793032232501,
+    "colsample_bytree": 0.9406505523932714,
+    "reg_alpha": 0.7477232223962729,
+    "reg_lambda": 1.4207826114530748e-05
+  }
+}

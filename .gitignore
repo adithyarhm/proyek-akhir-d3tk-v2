@@ -1,7 +1,7 @@
 .venv
 .venv-win
 /saved-models
-/outputs/plots
+/catboost_info
 /src/__pycache__
 /src/*.pyc
 /src/data/__pycache__

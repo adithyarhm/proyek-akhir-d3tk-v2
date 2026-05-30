@@ -1,0 +1,16 @@
+{
+  "model": "XGBoost",
+  "label": "node2",
+  "best_mae": 9.864119995756369,
+  "params": {
+    "n_estimators": 150,
+    "learning_rate": 0.2756597506025816,
+    "max_depth": 9,
+    "subsample": 0.8829385215308287,
+    "colsample_bytree": 0.7248015278897728,
+    "min_child_weight": 6,
+    "gamma": 0.22999488097262416,
+    "reg_alpha": 0.4352255964629745,
+    "reg_lambda": 0.4994160107084184
+  }
+}
