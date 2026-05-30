@@ -10,3 +10,5 @@ jupyter
 matplotlib
 seaborn
 shap
+optuna
+plotly

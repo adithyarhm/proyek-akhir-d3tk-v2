@@ -6,6 +6,7 @@ Orkestrasi fase penelitian:
   Fase 2 → Training (per-node / global sesuai SCENARIO di config.py)
 """
 
+from IPython.core import display_functions
 import os
 import pandas as pd
 import numpy as np
@@ -13,6 +14,7 @@ import matplotlib.pyplot as plt
 
 from src.config import SCENARIO, SCENARIO_CONFIG, TARGET_COL
 from src.data.data_loader import load_and_merge_raw_nodes, load_data
+from src.tuning import run_tuning
 from src.features.preprocess import preprocess
 from src.train import run_training, get_feature_list
 from src.savemodels import save_all_models
@@ -108,6 +110,27 @@ def main():
 
     print(f"  Kolom tersedia: {list(df.columns)}")
     print(f"  Fitur yang digunakan: {features}")
+
+
+    USE_TUNING = True  # set False untuk skip tuning (lebih cepat)
+
+    tuning_results = {}
+    if USE_TUNING:
+        print("\n[FASE 2a] Hyperparameter Tuning...")
+        if mode == "per_node":
+            for node_id, node_df in df.groupby("node_id"):
+                node_df = node_df.sort_values("datetime")
+                X_node = node_df[features].values
+                y_node = node_df[TARGET_COL].values
+                tuning_results[node_id] = run_tuning(X_node, y_node, mode="per_node", node_id=node_id)
+        else:
+            spatial = [f for f in ["lat", "lon", "elev"] if f in df.columns]
+            X_all = df.sort_values("datetime")[features + spatial].values
+            y_all = df.sort_values("datetime")[TARGET_COL].values
+            tuning_results["global"] = run_tuning(X_all, y_all, mode="global")
+
+    # Lalu pass ke run_training:
+    results = run_training(df, tuning_results=tuning_results if USE_TUNING else None)
 
     # ── FASE 2: Training ──────────────────────────────────────────
     print("\n[FASE 2] Training Model...")
