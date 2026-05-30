@@ -1,0 +1,15 @@
+.venv
+/src/__pycache__
+/src/*.pyc
+/src/data/__pycache__
+/src/data/*.pyc
+/src/models/__pycache__
+/src/models/*.pyc
+/src/preprocess/__pycache__
+/src/preprocess/*.pyc
+/src/train/__pycache__
+/src/train/*.pyc
+/src/evaluation/__pycache__
+/src/evaluation/*.pyc
+/src/config/__pycache__
+/src/config/*.pyc
