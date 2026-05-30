@@ -5,9 +5,6 @@ Orkestrasi fase penelitian:
   Fase 1 → Preprocessing
   Fase 2 → Training (per-node / global sesuai SCENARIO di config.py)
 """
-
-from IPython.core import display_functions
-from IPython.core import display_functions
 import os
 import pandas as pd
 import numpy as np
@@ -19,6 +16,7 @@ from src.tuning import run_tuning
 from src.features.preprocess import preprocess
 from src.train import run_training, get_feature_list
 from src.savemodels import save_all_models
+from src.tuning import run_tuning, plot_optuna_results
 
 
 def print_metrics_table(results: dict, mode: str):
@@ -114,25 +112,25 @@ def main():
 
 
     # ── FASE 2a: Tuning (opsional, aktifkan dengan flag) ──────────────
-    USE_TUNING = True  # set False untuk skip tuning, pakai default params
+    USE_TUNING = True
+    
+    N_TUNING_TRIALS = 10
 
     tuning_results = None
     if USE_TUNING:
-        from src.tuning import run_tuning, plot_optuna_results
         print("\n[FASE 2a] Optuna Hyperparameter Tuning...")
-        tuning_results = run_tuning(df, features=features, mode=mode, n_trials=50)
+        tuning_results = run_tuning(
+            df=df,
+            features=features,
+            mode=mode,
+            n_trials=N_TUNING_TRIALS,
+        )
 
-    # ── FASE 2b: Training dengan hasil tuning ─────────────────────────
+    # ── FASE 2b: Training dengan hasil tuning ────────────────────────
     print("\n[FASE 2b] Training Model...")
     results = run_training(df, tuning_results=tuning_results)
     print_metrics_table(results, mode)
     plot_metrics_barchart(results, mode)
-
-    # # ── FASE 2: Training ──────────────────────────────────────────
-    # print("\n[FASE 2] Training Model...")
-    # results = run_training(df)
-    # print_metrics_table(results, mode)
-    # plot_metrics_barchart(results, mode)
 
     # ── Simpan semua model pemenang ───────────────────────────────
     print("\n[Main] Menyimpan model...")
