@@ -23,7 +23,8 @@ proyek-akhir-d3tk-v2/
 │   ├── data/
 │   │   └── data_loader.py      # Pemuatan data mentah dan data processed
 │   ├── evaluation/
-│   │   └── metrics.py          # Penghitungan metrik regresi (RMSE, MAE, R², MAPE)
+│   │   ├── metrics.py            # Penghitungan metrik regresi (RMSE, MAE, R², MAPE)
+│   │   └── feature_importance.py # Analisis Feature Importance bawaan & SHAP
 │   ├── features/
 │   │   └── preprocess.py       # Preprocessing data, penanganan missing values, & rekayasa fitur
 │   └── models/                 # Inisialisasi model dasar (CatBoost, LightGBM, XGBoost, RandomForest)

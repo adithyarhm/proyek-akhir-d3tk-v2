@@ -6,6 +6,12 @@ Orkestrasi fase penelitian:
   Fase 2 → Training (per-node / global sesuai SCENARIO di config.py)
 """
 import os
+import sys
+
+# Paksa stdout pakai UTF-8 agar karakter Unicode (→, ─, dll.)
+# tampil dengan benar di terminal Windows (CP1252 default)
+sys.stdout.reconfigure(encoding='utf-8')
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,6 +23,7 @@ from src.features.preprocess import preprocess
 from src.train import run_training, get_feature_list
 from src.savemodels import save_all_models
 from src.tuning import run_tuning, plot_optuna_results
+from src.evaluation.feature_importance import run_feature_importance
 
 
 def print_metrics_table(results: dict, mode: str):
@@ -112,7 +119,7 @@ def main():
 
 
     # ── FASE 2a: Tuning (opsional, aktifkan dengan flag) ──────────────
-    USE_TUNING = True
+    USE_TUNING = False
     
     N_TUNING_TRIALS = 10
 
@@ -132,11 +139,7 @@ def main():
     print_metrics_table(results, mode)
     plot_metrics_barchart(results, mode)
 
-    # ── Simpan semua model pemenang ───────────────────────────────
-    print("\n[Main] Menyimpan model...")
-    save_all_models(results, mode)
-
-    # ── Tentukan model terbaik ────────────────────────────────────
+    # ── Tentukan model terbaik (diperlukan sebelum Fase 3) ────────────────
     if mode == "global":
         best_name = min(
             results["global"],
@@ -144,7 +147,6 @@ def main():
         )
         best_rmse = results["global"][best_name]["metrics_overall"]["rmse"]
     else:  # per_node
-        # Rata-rata RMSE tiap model di seluruh node
         model_names = set()
         for node_res in results.values():
             model_names.update(node_res.keys())
@@ -154,6 +156,32 @@ def main():
             avg_rmse[m] = sum(rmses) / len(rmses)
         best_name = min(avg_rmse, key=avg_rmse.get)
         best_rmse = avg_rmse[best_name]
+
+    # ── FASE 3: Feature Importance ─────────────────────────────────────────
+    print("\n[FASE 3] Feature Importance & Domain Analysis...")
+
+    # Rekonstruksi X_test dari df untuk analisis SHAP (pakai split terakhir)
+    from sklearn.model_selection import TimeSeriesSplit
+    spatial_feats = [f for f in ["lat", "lon", "elev"] if f in df.columns]
+    global_features = features + spatial_feats if mode == "global" else features
+    avail_features  = [f for f in global_features if f in df.columns]
+    df_sorted = df.sort_values("datetime").reset_index(drop=True)
+    X_all = df_sorted[avail_features].values
+    tss = TimeSeriesSplit(n_splits=5)
+    _, test_idx = list(tss.split(X_all))[-1]
+    X_test_for_shap = X_all[test_idx]
+
+    fi_results = run_feature_importance(
+        results=results,
+        features_used=avail_features,
+        mode=mode,
+        X_test=X_test_for_shap,
+        use_shap=True,
+    )
+
+    # ── Simpan semua model pemenang ───────────────────────────────
+    print("\n[Main] Menyimpan model...")
+    save_all_models(results, mode)
 
     print(f"\n{'#'*60}")
     print(f"  PIPELINE SELESAI — Skenario {SCENARIO}: {cfg['name']}")

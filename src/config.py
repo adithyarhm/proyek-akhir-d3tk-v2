@@ -11,7 +11,7 @@ definisi fitur, path data, dan parameter pelatihan.
 #   3 = Global,     fitur dasar saja
 #   4 = Global,     fitur dasar + temporal + turunan
 
-SCENARIO = 4  # <-- UBAH SKENARIO DI SINI
+SCENARIO = 1  # <-- UBAH SKENARIO DI SINI
 
 TARGET_COL = ["so2_ugm", "h2s_ugm"]
 BASE_FEATURES = ["hum_pct", "temp_c", "wind_kph"]
