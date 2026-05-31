@@ -9,9 +9,6 @@ Orkestrasi fase penelitian:
 """
 import os
 import sys
-
-# Paksa stdout pakai UTF-8 agar karakter Unicode (→, ─, dll.)
-# tampil dengan benar di terminal Windows (CP1252 default)
 sys.stdout.reconfigure(encoding='utf-8')
 
 import pandas as pd

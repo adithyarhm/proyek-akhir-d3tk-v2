@@ -8,10 +8,8 @@ const SCENARIO_META = {
 };
 
 const NODES = [
-  { id:'N-01', name:'Node 01', location:'Kawah Utama',  lat:-7.1647, lon:107.3892 },
-  { id:'N-02', name:'Node 02', location:'Tepi Barat',   lat:-7.1658, lon:107.3871 },
-  { id:'N-03', name:'Node 03', location:'Jalur Wisata', lat:-7.1635, lon:107.3905 },
-  { id:'N-04', name:'Node 04', location:'Pos Pantau',   lat:-7.1670, lon:107.3880 }
+  { id:'N-01', name:'Node 01', location:'Area Fumarol',  lat:-7.166844, lon:107.40365 },
+  { id:'N-02', name:'Node 02', location:'Area Pengunjung',   lat:-7.166644, lon:107.401367 }
 ];
 
 const THRESHOLDS = {

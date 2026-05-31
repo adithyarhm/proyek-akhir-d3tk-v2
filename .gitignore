@@ -8,6 +8,7 @@
 /app-inference/data/*.pyc
 /app-inference/routes/__pycache__
 /app-inference/routes/*.pyc
+/app-streamlit/
 /temp
 /saved-models
 /catboost_info

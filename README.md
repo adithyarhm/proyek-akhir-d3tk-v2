@@ -334,3 +334,20 @@ Layanan ini harus berjalan agar Express JS dashboard dapat mengirimkan data sens
       npm run dev
       ```
 5.  Buka browser Anda dan akses dashboard EWS di alamat: **`http://localhost:3000`**.
+
+---
+
+### Langkah 5: Menjalankan Streamlit Dashboard (Alternatif Ringkas & Instan)
+
+Untuk menjalankan visualisasi model dan melakukan inferensi secara langsung menggunakan Streamlit (tanpa memerlukan server Node.js dan broker FastAPI berjalan secara terpisah):
+
+1.  Pastikan virtual environment Python Anda telah aktif:
+    ```powershell
+    .venv-win\Scripts\activate
+    ```
+2.  Jalankan aplikasi Streamlit:
+    ```powershell
+    streamlit run app-streamlit/app.py
+    ```
+3.  Buka browser Anda dan akses dashboard Streamlit di alamat: **`http://localhost:8501`**.
+

@@ -7,10 +7,8 @@ const SCENARIO_META = {
 };
 
 const NODES = [
-  {id:'N-01',lat:-7.1234,lon:107.4021,elev:2090,label:'Crater Rim A'},
-  {id:'N-02',lat:-7.1241,lon:107.4035,elev:2085,label:'Crater Rim B'},
-  {id:'N-03',lat:-7.1228,lon:107.4010,elev:2095,label:'West Slope'},
-  {id:'N-04',lat:-7.1250,lon:107.4050,elev:2075,label:'East Lookout'},
+  {id:'N-01',lat:-7.166844,lon:107.40365,elev:2101,label:'Area Fumarol'},
+  {id:'N-02',lat:-7.166644,lon:107.401367,elev:2193,label:'Area Pengunjung'}
 ];
 
 const SO2_DANGER=500, SO2_WARN=250, H2S_DANGER=150, H2S_WARN=70;
@@ -98,6 +96,11 @@ function switchScenario(sc){
   });
   updateModelInfo();
   addLog(`Beralih ke Skenario ${sc}: ${SCENARIO_META[sc].name}`,'ok');
+  
+  if (document.getElementById('tabModelInfo').style.display === 'block') {
+    renderComparisonTable();
+    renderModelComparisonChart();
+  }
 }
 
 function updateModelInfo(){
@@ -119,8 +122,8 @@ function renderNodes(){
   el.innerHTML=NODES.map((n,i)=>`
     <div class="node-item ${i===activeNodeIdx?'active':''}" onclick="selectNode(${i})">
       <div>
-        <div class="node-name">${n.id}</div>
-        <div class="node-coords">${n.lat.toFixed(4)}, ${n.lon.toFixed(4)}</div>
+        <div class="node-name">${n.id} — ${n.label}</div>
+        <div class="node-coords">${n.lat.toFixed(6)}, ${n.lon.toFixed(6)}</div>
       </div>
       <span class="node-status-dot" style="background:var(--color-success)"></span>
     </div>`).join('');
@@ -129,6 +132,11 @@ function selectNode(i){
   activeNodeIdx=i;
   renderNodes();
   addLog(`Node aktif: ${NODES[i].id} (${NODES[i].label})`,'ok');
+  
+  if (document.getElementById('tabModelInfo').style.display === 'block') {
+    renderComparisonTable();
+    renderModelComparisonChart();
+  }
 }
 
 // ── SIMULATION STEP ──────────────────────────────────────────────────────────
@@ -346,6 +354,182 @@ function resetSim(){
 function changeSpeed(){
   simSpeed=parseInt(document.getElementById('speedSel').value);
   if(simRunning){clearInterval(simInterval);simInterval=setInterval(simTick,simSpeed);}
+}
+
+// ── MODEL COMPARISON METRICS DATA & LOGIC ──────────────────────────────────────
+const ALL_METRICS = {
+  1: {
+    "N-01": [
+      {model: 'CatBoost', rmse: 89.7351, mae: 68.1183, r2: -0.0299, mape: 68.73},
+      {model: 'LightGBM', rmse: 89.1968, mae: 67.1294, r2: -0.0556, mape: 67.48},
+      {model: 'XGBoost', rmse: 91.1795, mae: 69.6065, r2: -0.0773, mape: 72.31},
+      {model: 'RandomForest', rmse: 89.0576, mae: 67.2461, r2: -0.0185, mape: 66.98}
+    ],
+    "N-02": [
+      {model: 'CatBoost', rmse: 0.3388, mae: 0.1393, r2: -0.0848, mape: 85.66},
+      {model: 'LightGBM', rmse: 0.3753, mae: 0.1584, r2: -0.0249, mape: 82.06},
+      {model: 'XGBoost', rmse: 0.3285, mae: 0.1491, r2: -0.0462, mape: 85.23},
+      {model: 'RandomForest', rmse: 1.2096, mae: 0.6814, r2: -1.9472, mape: 84.28}
+    ]
+  },
+  2: {
+    "N-01": [
+      {model: 'CatBoost', rmse: 4.4562, mae: 1.7431, r2: 0.9966, mape: 1.30},
+      {model: 'LightGBM', rmse: 6.4686, mae: 1.5206, r2: 0.9930, mape: 1.58},
+      {model: 'XGBoost', rmse: 5.9066, mae: 1.4789, r2: 0.9938, mape: 1.50},
+      {model: 'RandomForest', rmse: 11.7201, mae: 5.8992, r2: 0.9827, mape: 5.25}
+    ],
+    "N-02": [
+      {model: 'CatBoost', rmse: 0.0330, mae: 0.0168, r2: 0.4950, mape: 6.36},
+      {model: 'LightGBM', rmse: 0.0807, mae: 0.0299, r2: 0.4668, mape: 15.91},
+      {model: 'XGBoost', rmse: 0.0469, mae: 0.0302, r2: 0.4888, mape: 10.27},
+      {model: 'RandomForest', rmse: 0.2678, mae: 0.1720, r2: 0.1637, mape: 21.55}
+    ]
+  },
+  3: {
+    "Global": [
+      {model: 'CatBoost', rmse: 67.4466, mae: 43.4666, r2: 0.6363, mape: 121.36},
+      {model: 'LightGBM', rmse: 68.9599, mae: 39.5133, r2: 0.6101, mape: 65.86},
+      {model: 'XGBoost', rmse: 67.2691, mae: 42.1387, r2: 0.6333, mape: 102.39},
+      {model: 'RandomForest', rmse: 68.1051, mae: 42.3650, r2: 0.6250, mape: 114.44}
+    ]
+  },
+  4: {
+    "Global": [
+      {model: 'CatBoost', rmse: 3.5163, mae: 0.9301, r2: 0.9987, mape: 2.42},
+      {model: 'LightGBM', rmse: 5.0151, mae: 0.8113, r2: 0.9974, mape: 1.30},
+      {model: 'XGBoost', rmse: 4.4704, mae: 0.7645, r2: 0.9978, mape: 1.65},
+      {model: 'RandomForest', rmse: 8.8285, mae: 3.3237, r2: 0.9927, mape: 6.05}
+    ]
+  }
+};
+
+let comparisonChart = null;
+
+function switchTab(tab) {
+  const tabOverview = document.getElementById('tabOverview');
+  const tabModelInfo = document.getElementById('tabModelInfo');
+  const navOverview = document.getElementById('navOverview');
+  const navModelInfo = document.getElementById('navModelInfo');
+  
+  if (tab === 'overview') {
+    tabOverview.style.display = 'block';
+    tabModelInfo.style.display = 'none';
+    navOverview.classList.add('active');
+    navModelInfo.classList.remove('active');
+  } else {
+    tabOverview.style.display = 'none';
+    tabModelInfo.style.display = 'block';
+    navOverview.classList.remove('active');
+    navModelInfo.classList.add('active');
+    
+    renderComparisonTable();
+    renderModelComparisonChart();
+  }
+}
+
+function renderComparisonTable() {
+  const meta = SCENARIO_META[currentScenario];
+  const activeNode = NODES[activeNodeIdx];
+  const isGlobal = meta.mode === 'global';
+  const dataKey = isGlobal ? 'Global' : activeNode.id;
+  
+  const nodeLabel = isGlobal ? 'Model Global' : `Node ${activeNode.id} (${activeNode.label})`;
+  document.getElementById('modelInfoSubtitle').textContent = `Analisis perbandingan performa algoritma ML untuk ${meta.name} (${nodeLabel})`;
+  document.getElementById('tableSubtitle').textContent = `Metrik RMSE, MAE, R², dan MAPE untuk ${nodeLabel}`;
+  
+  const metrics = ALL_METRICS[currentScenario][dataKey] || [];
+  const tbody = document.getElementById('comparisonTableBody');
+  
+  tbody.innerHTML = metrics.map(m => {
+    // Highlight if it is the winning model
+    const isWinner = m.model.toLowerCase().includes(meta.modelName.toLowerCase()) || 
+                     (meta.modelName.toLowerCase() === 'gradientboosting' && m.model === 'LightGBM') ||
+                     (meta.modelName.toLowerCase() === 'gradientboost' && m.model === 'LightGBM');
+                     
+    return `
+      <tr style="${isWinner ? 'background: rgba(245, 158, 11, 0.12); font-weight: 600;' : ''}">
+        <td>${m.model} ${isWinner ? '🏆' : ''}</td>
+        <td>${m.rmse.toFixed(4)}</td>
+        <td>${m.mae.toFixed(4)}</td>
+        <td>${m.r2.toFixed(4)}</td>
+        <td>${m.mape.toFixed(2)}%</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderModelComparisonChart() {
+  const canvas = document.getElementById('comparisonChart');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const meta = SCENARIO_META[currentScenario];
+  const activeNode = NODES[activeNodeIdx];
+  const isGlobal = meta.mode === 'global';
+  const dataKey = isGlobal ? 'Global' : activeNode.id;
+  const metrics = ALL_METRICS[currentScenario][dataKey] || [];
+  
+  const metricType = document.getElementById('metricSel').value;
+  
+  const labels = metrics.map(m => m.model);
+  const data = metrics.map(m => m[metricType]);
+  
+  const bgColors = [
+    'rgba(56, 189, 248, 0.65)',
+    'rgba(52, 211, 153, 0.65)',
+    'rgba(251, 146, 60, 0.65)',
+    'rgba(167, 139, 250, 0.65)'
+  ];
+  const borderColors = [
+    '#38bdf8',
+    '#34d399',
+    '#fb923c',
+    '#a78bfa'
+  ];
+  
+  if (comparisonChart) {
+    comparisonChart.destroy();
+  }
+  
+  comparisonChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: metricType.toUpperCase(),
+        data: data,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 1.5,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          bodyFont: { family: 'JetBrains Mono', size: 11 }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#8892a8', font: { size: 10, family: 'Inter' } },
+          grid: { color: 'rgba(255,255,255,0.03)' }
+        },
+        y: {
+          ticks: { color: '#8892a8', font: { size: 9, family: 'JetBrains Mono' } },
+          grid: { color: 'rgba(255,255,255,0.03)' }
+        }
+      }
+    }
+  });
+}
+
+function changeCompareMetric() {
+  renderModelComparisonChart();
 }
 
 // ── CLOCK ─────────────────────────────────────────────────────────────────────

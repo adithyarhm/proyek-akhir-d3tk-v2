@@ -57,19 +57,11 @@
     <nav>
       <div class="nav-section">
         <div class="nav-label">Menu</div>
-        <div class="nav-item active">
+        <div class="nav-item active" id="navOverview" onclick="switchTab('overview')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           Overview
         </div>
-        <div class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Prediksi Real-time
-        </div>
-        <div class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-          EWS Alerts
-        </div>
-        <div class="nav-item">
+        <div class="nav-item" id="navModelInfo" onclick="switchTab('modelinfo')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           Model Info
         </div>
@@ -87,169 +79,232 @@
   <!-- MAIN CONTENT -->
   <main class="main">
 
-    <!-- Anomaly Banner -->
-    <div class="anomaly-banner" id="anomalyBanner">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div class="anomaly-text" id="anomalyText">Kadar gas melampaui batas aman</div>
-    </div>
+    <!-- TAB OVERVIEW -->
+    <div id="tabOverview">
+      <!-- Anomaly Banner -->
+      <div class="anomaly-banner" id="anomalyBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div class="anomaly-text" id="anomalyText">Kadar gas melampaui batas aman</div>
+      </div>
 
-    <!-- Page Header -->
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Dashboard Monitoring Gas</h1>
-        <p class="page-subtitle">Simulasi deploy model prediksi SO₂ & H₂S · Kawah Putih, Jawa Barat</p>
-      </div>
-      <div class="header-meta">
-        <div class="live-badge"><span class="live-dot"></span>LIVE SIM</div>
-        <div style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--color-text-muted)" id="clockDisplay">--:--:--</div>
-      </div>
-    </div>
-
-    <!-- KPI Row -->
-    <div class="kpi-grid" id="kpiGrid">
-      <div class="kpi-card" style="--kpi-accent:var(--color-so2)">
-        <div class="kpi-label">SO₂ Prediksi</div>
-        <div class="kpi-value" id="kpiSO2">--</div>
-        <div class="kpi-unit">µg/m³</div>
-        <div class="kpi-trend neutral" id="trendSO2">— memuat data</div>
-      </div>
-      <div class="kpi-card" style="--kpi-accent:var(--color-h2s)">
-        <div class="kpi-label">H₂S Prediksi</div>
-        <div class="kpi-value" id="kpiH2S">--</div>
-        <div class="kpi-unit">µg/m³</div>
-        <div class="kpi-trend neutral" id="trendH2S">— memuat data</div>
-      </div>
-      <div class="kpi-card" style="--kpi-accent:var(--color-temp)">
-        <div class="kpi-label">Suhu Udara</div>
-        <div class="kpi-value" id="kpiTemp">--</div>
-        <div class="kpi-unit">°C · temp_c</div>
-        <div class="kpi-trend neutral" id="trendTemp">— memuat data</div>
-      </div>
-      <div class="kpi-card" style="--kpi-accent:var(--color-hum)">
-        <div class="kpi-label">Kelembapan</div>
-        <div class="kpi-value" id="kpiHum">--</div>
-        <div class="kpi-unit">% · hum_pct</div>
-        <div class="kpi-trend neutral" id="trendHum">— memuat data</div>
-      </div>
-      <div class="kpi-card" style="--kpi-accent:var(--color-wind)">
-        <div class="kpi-label">Kecepatan Angin</div>
-        <div class="kpi-value" id="kpiWind">--</div>
-        <div class="kpi-unit">km/h · wind_kph</div>
-        <div class="kpi-trend neutral" id="trendWind">— memuat data</div>
-      </div>
-      <div class="kpi-card" style="--kpi-accent:var(--color-primary)">
-        <div class="kpi-label">Model RMSE (SO₂)</div>
-        <div class="kpi-value" id="kpiRMSE">--</div>
-        <div class="kpi-unit">root mean sq. error</div>
-        <div class="kpi-trend neutral" id="trendRMSE">pemenang aktif</div>
-      </div>
-    </div>
-
-    <!-- Charts Row -->
-    <div class="section-grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Deret Waktu SO₂</div>
-            <div class="card-subtitle">Prediksi vs. Ground Truth (simulasi)</div>
-          </div>
-          <span style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--color-so2);font-weight:600">SO₂</span>
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Dashboard Monitoring Gas</h1>
+          <p class="page-subtitle">Simulasi deploy model prediksi SO₂ & H₂S · Kawah Putih, Jawa Barat</p>
         </div>
-        <div class="chart-wrap"><canvas id="chartSO2"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Deret Waktu H₂S</div>
-            <div class="card-subtitle">Prediksi vs. Ground Truth (simulasi)</div>
-          </div>
-          <span style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--color-h2s);font-weight:600">H₂S</span>
-        </div>
-        <div class="chart-wrap"><canvas id="chartH2S"></canvas></div>
-      </div>
-    </div>
-
-    <!-- EWS Gauges + Prediction Table -->
-    <div class="section-grid-3">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Tabel Prediksi Live</div>
-            <div class="card-subtitle">Riwayat 10 prediksi terakhir per node aktif</div>
-          </div>
-        </div>
-        <table class="pred-table">
-          <thead><tr><th>Waktu</th><th>Node</th><th>SO₂ µg/m³</th><th>H₂S µg/m³</th><th>Status</th></tr></thead>
-          <tbody id="predTableBody"></tbody>
-        </table>
-        <div class="sim-controls">
-          <button class="btn-primary" id="btnStart" onclick="toggleSim()">▶ Mulai Simulasi</button>
-          <button class="btn-secondary" onclick="resetSim()">↺ Reset</button>
-          <div class="speed-control">
-            <span class="speed-label">Kecepatan:</span>
-            <select class="speed-select" id="speedSel" onchange="changeSpeed()">
-              <option value="2000">1×</option>
-              <option value="1000" selected>2×</option>
-              <option value="500">4×</option>
-              <option value="250">8×</option>
-            </select>
-          </div>
+        <div class="header-meta">
+          <div class="live-badge"><span class="live-dot"></span>LIVE SIM</div>
+          <div style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--color-text-muted)" id="clockDisplay">--:--:--</div>
         </div>
       </div>
 
-      <div>
-        <!-- EWS Gauges -->
-        <div class="card" style="margin-bottom:var(--space-4)">
-          <div class="card-header">
-            <div class="card-title">Indikator EWS</div>
-          </div>
-          <div class="ews-grid">
-            <div class="ews-gauge">
-              <div class="gauge-wrap"><canvas id="gaugeSO2"></canvas></div>
-              <div class="gauge-value" id="gaugeValSO2" style="color:var(--color-so2)">0.00</div>
-              <div class="gauge-label">SO₂</div>
-              <div class="gauge-status aman" id="gaugeBadgeSO2">AMAN</div>
-            </div>
-            <div class="ews-gauge">
-              <div class="gauge-wrap"><canvas id="gaugeH2S"></canvas></div>
-              <div class="gauge-value" id="gaugeValH2S" style="color:var(--color-h2s)">0.00</div>
-              <div class="gauge-label">H₂S</div>
-              <div class="gauge-status aman" id="gaugeBadgeH2S">AMAN</div>
-            </div>
-          </div>
+      <!-- KPI Row -->
+      <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-card" style="--kpi-accent:var(--color-so2)">
+          <div class="kpi-label">SO₂ Prediksi</div>
+          <div class="kpi-value" id="kpiSO2">--</div>
+          <div class="kpi-unit">µg/m³</div>
+          <div class="kpi-trend neutral" id="trendSO2">— memuat data</div>
         </div>
+        <div class="kpi-card" style="--kpi-accent:var(--color-h2s)">
+          <div class="kpi-label">H₂S Prediksi</div>
+          <div class="kpi-value" id="kpiH2S">--</div>
+          <div class="kpi-unit">µg/m³</div>
+          <div class="kpi-trend neutral" id="trendH2S">— memuat data</div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:var(--color-temp)">
+          <div class="kpi-label">Suhu Udara</div>
+          <div class="kpi-value" id="kpiTemp">--</div>
+          <div class="kpi-unit">°C · temp_c</div>
+          <div class="kpi-trend neutral" id="trendTemp">— memuat data</div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:var(--color-hum)">
+          <div class="kpi-label">Kelembapan</div>
+          <div class="kpi-value" id="kpiHum">--</div>
+          <div class="kpi-unit">% · hum_pct</div>
+          <div class="kpi-trend neutral" id="trendHum">— memuat data</div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:var(--color-wind)">
+          <div class="kpi-label">Kecepatan Angin</div>
+          <div class="kpi-value" id="kpiWind">--</div>
+          <div class="kpi-unit">km/h · wind_kph</div>
+          <div class="kpi-trend neutral" id="trendWind">— memuat data</div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:var(--color-primary)">
+          <div class="kpi-label">Model RMSE (SO₂)</div>
+          <div class="kpi-value" id="kpiRMSE">--</div>
+          <div class="kpi-unit">root mean sq. error</div>
+          <div class="kpi-trend neutral" id="trendRMSE">pemenang aktif</div>
+        </div>
+      </div>
 
-        <!-- Model Info -->
+      <!-- Charts Row -->
+      <div class="section-grid-2" style="margin-top:var(--space-6)">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Informasi Model Pemenang</div>
+            <div>
+              <div class="card-title">Deret Waktu SO₂</div>
+              <div class="card-subtitle">Prediksi vs. Ground Truth (simulasi)</div>
+            </div>
+            <span style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--color-so2);font-weight:600">SO₂</span>
           </div>
-          <div class="model-info-grid" id="modelInfoGrid">
-            <div class="info-item"><div class="info-key">Nama Model</div><div class="info-val" id="mName">RandomForest</div></div>
-            <div class="info-item"><div class="info-key">Skenario</div><div class="info-val" id="mScenario">S1 · Baseline</div></div>
-            <div class="info-item"><div class="info-key">Mode</div><div class="info-val" id="mMode">per_node</div></div>
-            <div class="info-item"><div class="info-key">Fitur Input</div><div class="info-val" id="mFeatures">3 fitur</div></div>
-            <div class="info-item"><div class="info-key">RMSE SO₂</div><div class="info-val" id="mRMSE_SO2">—</div></div>
-            <div class="info-item"><div class="info-key">RMSE H₂S</div><div class="info-val" id="mRMSE_H2S">—</div></div>
+          <div class="chart-wrap"><canvas id="chartSO2"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Deret Waktu H₂S</div>
+              <div class="card-subtitle">Prediksi vs. Ground Truth (simulasi)</div>
+            </div>
+            <span style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--color-h2s);font-weight:600">H₂S</span>
           </div>
+          <div class="chart-wrap"><canvas id="chartH2S"></canvas></div>
+        </div>
+      </div>
+
+      <!-- EWS Gauges + Prediction Table -->
+      <div class="section-grid-3" style="margin-top:var(--space-6)">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Tabel Prediksi Live</div>
+              <div class="card-subtitle">Riwayat 10 prediksi terakhir per node aktif</div>
+            </div>
+          </div>
+          <table class="pred-table">
+            <thead><tr><th>Waktu</th><th>Node</th><th>SO₂ µg/m³</th><th>H₂S µg/m³</th><th>Status</th></tr></thead>
+            <tbody id="predTableBody"></tbody>
+          </table>
+          <div class="sim-controls">
+            <button class="btn-primary" id="btnStart" onclick="toggleSim()">▶ Mulai Simulasi</button>
+            <button class="btn-secondary" onclick="resetSim()">↺ Reset</button>
+            <div class="speed-control">
+              <span class="speed-label">Kecepatan:</span>
+              <select class="speed-select" id="speedSel" onchange="changeSpeed()">
+                <option value="2000">1×</option>
+                <option value="1000" selected>2×</option>
+                <option value="500">4×</option>
+                <option value="250">8×</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- EWS Gauges -->
+          <div class="card" style="margin-bottom:var(--space-4)">
+            <div class="card-header">
+              <div class="card-title">Indikator EWS</div>
+            </div>
+            <div class="ews-grid">
+              <div class="ews-gauge">
+                <div class="gauge-wrap"><canvas id="gaugeSO2"></canvas></div>
+                <div class="gauge-value" id="gaugeValSO2" style="color:var(--color-so2)">0.00</div>
+                <div class="gauge-label">SO₂</div>
+                <div class="gauge-status aman" id="gaugeBadgeSO2">AMAN</div>
+              </div>
+              <div class="ews-gauge">
+                <div class="gauge-wrap"><canvas id="gaugeH2S"></canvas></div>
+                <div class="gauge-value" id="gaugeValH2S" style="color:var(--color-h2s)">0.00</div>
+                <div class="gauge-label">H₂S</div>
+                <div class="gauge-status aman" id="gaugeBadgeH2S">AMAN</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Model Info Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Informasi Model Pemenang</div>
+            </div>
+            <div class="model-info-grid" id="modelInfoGrid">
+              <div class="info-item"><div class="info-key">Nama Model</div><div class="info-val" id="mName">RandomForest</div></div>
+              <div class="info-item"><div class="info-key">Skenario</div><div class="info-val" id="mScenario">S1 · Baseline</div></div>
+              <div class="info-item"><div class="info-key">Mode</div><div class="info-val" id="mMode">per_node</div></div>
+              <div class="info-item"><div class="info-key">Fitur Input</div><div class="info-val" id="mFeatures">3 fitur</div></div>
+              <div class="info-item"><div class="info-key">RMSE SO₂</div><div class="info-val" id="mRMSE_SO2">—</div></div>
+              <div class="info-item"><div class="info-key">RMSE H₂S</div><div class="info-val" id="mRMSE_H2S">—</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Feature Bars + Log -->
+      <div class="section-grid-2" style="margin-top:var(--space-6)">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Kondisi Cuaca Saat Ini</div>
+            <div class="card-subtitle">Fitur input model (BASE_FEATURES)</div>
+          </div>
+          <div class="metric-row" id="weatherMetrics"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Log Sistem</div>
+          </div>
+          <div class="log-list" id="sysLog"></div>
         </div>
       </div>
     </div>
 
-    <!-- Weather Feature Bars + Log -->
-    <div class="section-grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Kondisi Cuaca Saat Ini</div>
-          <div class="card-subtitle">Fitur input model (BASE_FEATURES)</div>
+    <!-- TAB MODEL INFO -->
+    <div id="tabModelInfo" style="display:none">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Informasi & Perbandingan Model</h1>
+          <p class="page-subtitle" id="modelInfoSubtitle">Analisis perbandingan performa algoritma ML untuk skenario aktif</p>
         </div>
-        <div class="metric-row" id="weatherMetrics"></div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Log Sistem</div>
+
+      <div class="section-grid-2" style="margin-top:var(--space-6)">
+        <!-- Comparison Table Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Tabel Perbandingan Metrik</div>
+              <div class="card-subtitle" id="tableSubtitle">RMSE, MAE, R², MAPE untuk semua model</div>
+            </div>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <table class="pred-table" id="comparisonTable">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>RMSE 📉</th>
+                  <th>MAE 📉</th>
+                  <th>R² 📈</th>
+                  <th>MAPE (%) 📉</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonTableBody">
+                <!-- Filled via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="log-list" id="sysLog"></div>
+
+        <!-- Comparison Chart Card -->
+        <div class="card">
+          <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="card-title">Grafik Perbandingan Metrik</div>
+              <div class="card-subtitle">Visualisasi performa antar model</div>
+            </div>
+            <div class="speed-control" style="margin-left:auto">
+              <select class="speed-select" id="metricSel" onchange="changeCompareMetric()">
+                <option value="rmse" selected>RMSE</option>
+                <option value="mae">MAE</option>
+                <option value="mape">MAPE (%)</option>
+                <option value="r2">R² Score</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="comparisonChart" style="max-height: 280px;"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
