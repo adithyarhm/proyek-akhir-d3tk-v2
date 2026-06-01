@@ -243,24 +243,6 @@ graph LR
 4.  **Dashboard Frontend (`app-inference/public/index.html`)**:
     - Menyuguhkan visualisasi grafik monitoring interaktif, visualisasi status alert (**AMAN** - Hijau, **WASPADA** - Kuning, **BAHAYA** - Merah) berdasarkan ambang batas kadar gas, panel kendali skenario, model, dan input data cuaca interaktif.
 
----
-
-## 📊 Hasil Evaluasi Terbaru (Skenario 4)
-
-Berikut adalah metrik performa model global yang dievaluasi secara menyeluruh pada data pengujian Skenario 4:
-
-| Model            | RMSE 📉    | MAE 📉     | R² 📈      | MAPE (%) 📉 |
-| :--------------- | :--------- | :--------- | :--------- | :---------- |
-| **XGBoost**      | **4.6800** | 1.1614     | **0.9977** | **2.13%**   |
-| **LightGBM**     | 5.4070     | **1.1211** | 0.9968     | 2.51%       |
-| **CatBoost**     | 8.2862     | 4.6400     | 0.9941     | 26.48%      |
-| **RandomForest** | 9.3872     | 3.8392     | 0.9914     | 6.71%       |
-
-> [!TIP]
-> Model **XGBoost** dan **LightGBM** memberikan akurasi prediksi tertinggi dengan nilai $R^2$ mencapai **> 0.99** dan persentase kesalahan (MAPE) yang sangat kecil (~2%).
-
----
-
 ## 🚀 Cara Menjalankan Sistem
 
 ### 📦 Prasyarat (Requirements)
@@ -350,4 +332,3 @@ Untuk menjalankan visualisasi model dan melakukan inferensi secara langsung meng
     streamlit run app-streamlit/app.py
     ```
 3.  Buka browser Anda dan akses dashboard Streamlit di alamat: **`http://localhost:8501`**.
-
